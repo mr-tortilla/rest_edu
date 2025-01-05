@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\ChannelController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ReceiptController;
 use Illuminate\Support\Facades\Route;
 
 //Route::get('/user', function (Request $request) {
@@ -39,6 +40,11 @@ Route::controller(AuthorController::class)->prefix('authors')
         Route::post('update/{id}', 'update');
         Route::get('', 'index');
         Route::get('{id}', 'show');
+    });
+Route::controller(ReceiptController::class)->prefix('receipt')
+    ->group(function () {
+        Route::get('create', 'create');
+        Route::get('create_bg', 'create_bg');
     });
 //    Route::put('/users/{id}', [UserController::class, 'update']);
 //});

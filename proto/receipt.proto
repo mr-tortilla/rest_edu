@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+option php_namespace = "GRPC\\Receipt";
+option php_metadata_namespace = "GRPC\\GPBMetadata";
+
+package receipt;
+
+service Receipt {
+    rpc receipt (ReceiptRequest) returns (ReceiptResponse) {}
+}
+
+message ReceiptRequest {
+    int32 id = 0;
+    repeated Product products = 1;
+}
+
+message Product{
+    string name = 0;
+    int32 amount = 1;
+}
+
+message ReceiptResponse {
+    string path = 0;
+}

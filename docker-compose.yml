@@ -7,10 +7,23 @@ services:
             - "443:443"
         volumes:
             - ./_docker/nginx/conf.d:/etc/nginx/conf.d
-            - ./logs/nginx:/var/www/logs/nginx
+            - ./storage/logs/nginx:/var/www/logs/nginx
             - .:/var/www
         links:
             - php
+        networks:
+            - app
+    rabbitmq:
+        container_name: edu_rabbitmq
+        image: rabbitmq:3-management
+        environment:
+            - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
+            - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
+        ports:
+            - "15672:15672"
+            - "5672:5672"
+        networks:
+            - app
     php:
         build:
             dockerfile: ./_docker/php/Dockerfile
@@ -19,10 +32,11 @@ services:
         volumes:
             - .:/var/www
             - ./_docker/php/php.ini:/usr/local/etc/php/conf.d/40-custom.ini
-            - ./_docker/php/xdebug.ini:/etc/php/8.3/fpm/conf.d/xdebug.ini
         user: "1000:1000"
         environment:
             - XDEBUG_CONFIG=remote_host=host.docker.internal
+        networks:
+            - app
     postgres:
         container_name: edu_postgres
         image: postgres:latest
@@ -36,4 +50,10 @@ services:
             - "5432:5432"
         volumes:
             - ./_docker/postgres/data:/var/lib/postgresql/data
-    #            - ./.docker/conf/postgres/:/docker-entrypoint-initdb.d/
+        #            - ./.docker/conf/postgres/:/docker-entrypoint-initdb.d/
+        networks:
+            - app
+networks:
+    app:
+        name: edu_network
+        driver: bridge
